@@ -1,0 +1,73 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf200
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 AndaleMono;}
+{\colortbl;\red255\green255\blue255;\red47\green255\blue18;}
+\margl1440\margr1440\vieww16880\viewh9580\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs24 \cf0 for f in "$@"\
+do\
+	if [[ $f == *.7z ]]\
+	then\
+\
+#f= /Users/tnl/BioSemiRuns/2014-/Data\\ 2014-/11-2014-08-05/11_01_MN_01_080514_1553_Run1_raw.txt\
+\
+		g=$\{f%/*\}\
+#g= /Users/tnl/BioSemiRuns/2014-/Data 2014-/11-2014-08-05\
+\
+		h=$(echo $f|rev)\
+#h= txt.war_1nuR_3551_415080_10_NM_10_11/50-80-4102-11/-4102 ataD/-4102/snuRimeSoiB/lnt/sresU/\
+\
+		nf=$\{h%%/*\}\
+#nf= txt.war_1nuR_3551_415080_10_NM_10_11\
+\
+		mkdir -p "$g"/_biosemitemp/\
+		cd "$g"/_biosemitemp/\
+\
+		fn=$(echo $nf|rev)\
+#fn= 11_01_MN_01_080514_1553_Run1_raw.txt\
+\
+		echo $fn > _biosemitempa.txt\
+\
+		ls -otr "$f" | awk '\{printf("%s\\t%s\\t%s %s\\n", $4, $7, $6, $5); \}' > _biosemitempb.txt\
+# 739997612	16:04	5 Aug\
+\
+		i=$\{fn%_*\}\
+#i= 11_01_MN_01_080514_1553_Run1\
+\
+		j=$\{i%_*\}\
+#j= 
+\f1 \cf2 \cb0 \CocoaLigature0 11_01_MN_01_080514_1553
+\f0 \cf0 \cb1 \CocoaLigature1 \
+\
+		echo $\{j:(-11)\} > _biosemitempc.txt\
+# 
+\f1 \cf2 \cb0 \CocoaLigature0 080514_1553
+\f0 \cf0 \cb1 \CocoaLigature1 \
+\
+		md5 "$f" > _biosemitemp_d.txt\
+# 
+\f1 \cf2 \cb0 \CocoaLigature0 MD5 (11_01_MN_01_080514_1553_Run1_raw.txt) = 6bceb7551f943dc31cc3a7c64e1c478e
+\f0 \cf0 \cb1 \CocoaLigature1 \
+\
+		tr '\\n' '\\t' < _biosemitempa.txt  > _biosemitemp_a.txt\
+\
+\
+		tr '\\n' '\\t' < _biosemitempb.txt  > _biosemitemp_b.txt\
+\
+\
+		tr '\\n' '\\t' < _biosemitempc.txt  > _biosemitemp_c.txt\
+\
+\
+		cat _biosemitemp_*.txt >> _biosemitempcat.txt\
+	fi\
+done\
+sed 's/MD5 //g' _biosemitempcat.txt > _biosemitempcata.txt\
+sed 's/[)(]//g' _biosemitempcata.txt > _biosemitempcatb.txt\
+sed 's/ = /	/g' _biosemitempcatb.txt > _biosemitempcatc.txt\
+sort -k6 _biosemitempcatc.txt -o _biosemitempfinalb.txt\
+echo -e "File\\tSize\\tTime Modified\\tDate Modified\\tDate_Time Created\\tLocation\\tMD5 Hash" > _biosemitempfinala.txt\
+cat _biosemitempfinal*.txt >> _Data_Checksums.txt\
+pbcopy < _Data_Checksums.txt\
+mv _Data_Checksums.txt "$g"\
+rm -rf -- "$g"/_biosemitemp/\
+}
